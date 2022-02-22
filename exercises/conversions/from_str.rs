@@ -26,7 +26,7 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
+
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -37,10 +37,44 @@ enum ParsePersonError {
 //    with something like `"4".parse::<usize>()`
 // 6. If while extracting the name and the age something goes wrong, an error should be returned
 // If everything goes well, then return a Result of a Person object
-
+// We implement the Default trait to use it as a fallback
+// when the provided string is not convertible into a Person object
+impl Default for Person {
+    fn default() -> Person {
+        Person {
+            name: String::from("John"),
+            age: 30,
+        }
+    }
+}
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        
+        if s.len()>0{
+            let sp:Vec<_>  = s.split(',').collect();
+            if sp.len()==2 {
+                if sp[0].len() > 0{
+                    let na = sp[0];
+                    let rs = sp[1].parse::<usize>();
+                    match rs {
+                        Ok(v) => 
+                            return Ok(Person{
+                                name:na.into(),
+                                age:v,
+                            }),
+                        Err(e)=>return Err(ParsePersonError::ParseInt(e)),
+                    }
+                }else {
+                    return Err(ParsePersonError::NoName);
+                }
+            }else {
+                return Err(ParsePersonError::BadLen);
+            }
+        }else {
+            return Err(ParsePersonError::Empty);
+        }
+        
     }
 }
 
