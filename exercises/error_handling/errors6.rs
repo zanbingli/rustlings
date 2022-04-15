@@ -24,6 +24,9 @@ impl ParsePosNonzeroError {
     fn from_creation2(err: ParseIntError) ->ParsePosNonzeroError {
         ParsePosNonzeroError::ParseInt(err)
     }
+    fn from_creation(err:CreationError) ->ParsePosNonzeroError {
+        ParsePosNonzeroError::Creation(err)
+    }
 }
 
 fn parse_pos_nonzero(s: &str)
